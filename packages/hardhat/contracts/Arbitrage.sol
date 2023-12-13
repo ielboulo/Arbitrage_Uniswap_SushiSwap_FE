@@ -28,28 +28,18 @@ interface IERC20 {
 	event Approval(address indexed owner, address indexed spender, uint value);
 }
 
-interface IWETH9 {
-    function deposit() external payable;
-    function withdraw(uint256 wad) external;
-    function approve(address guy, uint256 wad) external returns (bool);
-    function transfer(address dst, uint256 wad) external returns (bool);
-    function transferFrom(address src, address dst, uint256 wad) external returns (bool);
-    function totalSupply() external view returns (uint256);
-    function balanceOf(address src) external view returns (uint256);
-    function allowance(address src, address guy) external view returns (uint256);
-
-    event Approval(address indexed src, address indexed guy, uint256 wad);
-    event Transfer(address indexed src, address indexed dst, uint256 wad);
-    event Deposit(address indexed dst, uint256 wad);
-    event Withdrawal(address indexed src, uint256 wad);
-}
-
 contract Arbitrage {
     address constant WETH_ADDRESS = 0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6;
-    address constant UNISWAP_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D; // On Sepolia ? 
-    address constant SUSHISWAP_ROUTER_ADDRESS = 0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506; // On Sepolia ? 
+    // address constant UNISWAP_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D; //  On ETH Mainnet 
+    // address constant SUSHISWAP_ROUTER_ADDRESS = 0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506; // On ETH Mainnet
+
+    address constant UNISWAP_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D; //  On Goerli Mainnet 
+    address constant SUSHISWAP_ROUTER_ADDRESS = 0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506; // On Goerli Mainnet
+
     IUniswapV2Router private uniswapRouter;
     ISushiSwapRouter private sushiswapRouter;
+
+    event FetchBalance(uint256 amount);
 
     constructor() {
         uniswapRouter = IUniswapV2Router(UNISWAP_ROUTER_ADDRESS);
@@ -76,13 +66,17 @@ contract Arbitrage {
         
     }
 
-    function getBalance (address _tokenContractAddress) external view  returns (uint256) {
-        try IERC20(_tokenContractAddress).balanceOf(address(this)) returns (uint256 balance) {
-            return balance;
-        } catch {
-            return 0;
-        }
-	}
+    // function getBalance (address _tokenContractAddress) external   returns (uint256) {
+    //     try IERC20(_tokenContractAddress).balanceOf(address(this)) returns (uint256 balance) {
+    //         emit FetchBalance(balance);
+    //         return balance;
+    //     } catch {
+    //         return 0;
+    //     }
+	// }
+
+   // getPrice_uniswap() : dex ? 
+   // getPrice_sushiswap(): oracle ? 
 
     //     address constant UNISWAP_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;   // On Sepolia ? 
     //     address constant SUSHISWAP_ROUTER_ADDRESS = 0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506; // On Sepolia ?
