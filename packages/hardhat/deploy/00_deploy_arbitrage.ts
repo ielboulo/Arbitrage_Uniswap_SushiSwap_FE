@@ -1,22 +1,27 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
+import { ethers } from "hardhat";
+//import dotenv from "dotenv";
 
-const deployHelloWorld: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
-  const { deployer } = await hre.getNamedAccounts();
+const deployArbitrage: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deploy } = hre.deployments;
 
-  console.log("deployer = ", deployer);
-  //console.log("balance = ", IERC20(0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43).balanceOf(deployer);``
-  const deployerBalance = await hre.ethers.provider.getBalance(deployer);
-  console.log("balance = ", hre.ethers.utils.formatEther(deployerBalance));
+  //const { deployer } = await hre.getNamedAccounts();
+  const privateKey = process.env.PRIVATE_KEY;
+  const deployer = new ethers.Wallet(privateKey, ethers.provider);
+  console.log("Deploying from MetaMask wallet address:", deployer.address);
+  const deployerBalance = await ethers.provider.getBalance(deployer.address);
+  console.log("Balance of MetaMask wallet:", ethers.utils.formatEther(deployerBalance));
+
+  //const deployerSigner = deployer.connect(ethers.provider); // Get signer instance
 
   await deploy("Arbitrage", {
-    from: deployer,
+    from: deployer.address,
     log: true,
     autoMine: true,
   });
 };
 
-export default deployHelloWorld;
+export default deployArbitrage;
 
-deployHelloWorld.tags = ["Arbitrage"];
+deployArbitrage.tags = ["Arbitrage"];
