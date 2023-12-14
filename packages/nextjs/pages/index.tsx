@@ -11,24 +11,12 @@ const Home: NextPage = () => {
         <div className="px-5">
           <h1 className="text-center mb-8">
             <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-ETH 2</span>
+            <span className="block text-4xl font-bold">Arbitrage between Uniswap & Sushiswap DEXes</span>
           </h1>
-          <p className="text-center text-lg">
-            Get started by editing{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/nextjs/pages/index.tsx
-            </code>
-          </p>
-          <p className="text-center text-lg">
-            Edit your smart contract{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              YourContract.sol
-            </code>{" "}
-            in{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/hardhat/contracts
-            </code>
-          </p>
+
+          <h1 className="text-center mb-8">
+            <span className="block text-3xl font-bold">Scaffold-ETH 2</span>
+          </h1>
         </div>
 
         <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12">
@@ -38,7 +26,7 @@ const Home: NextPage = () => {
               <p>
                 Tinker with your smart contract using the{" "}
                 <Link href="/debug" passHref className="link">
-                  Debug Contract
+                  Arbitrage Contract
                 </Link>{" "}
                 tab.
               </p>

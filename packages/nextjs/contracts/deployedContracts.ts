@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   11155111: {
     Arbitrage: {
-      address: "0x3176DA5931fD4b5303bF0A1642Af0793801D6630",
+      address: "0x7321c2D644c9FBAE82b7F0561490B5e855AC463e",
       abi: [
         {
           inputs: [],
@@ -24,8 +24,51 @@ const deployedContracts = {
               type: "uint256",
             },
           ],
+          name: "ArbitrageSuccessful",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+          ],
           name: "FetchBalance",
           type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [],
+          name: "RecoverySuccessful",
+          type: "event",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_tokenAddress",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "_amountIn",
+              type: "uint256",
+            },
+          ],
+          name: "getPriceFromSushiswap",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
         },
         {
           inputs: [
@@ -61,7 +104,7 @@ const deployedContracts = {
               type: "address",
             },
           ],
-          stateMutability: "view",
+          stateMutability: "pure",
           type: "function",
         },
         {
@@ -74,18 +117,12 @@ const deployedContracts = {
               type: "address",
             },
           ],
-          stateMutability: "view",
+          stateMutability: "pure",
           type: "function",
         },
         {
-          inputs: [
-            {
-              internalType: "string",
-              name: "newText",
-              type: "string",
-            },
-          ],
-          name: "setText",
+          inputs: [],
+          name: "recoverEth",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
@@ -103,7 +140,7 @@ const deployedContracts = {
               type: "uint256",
             },
           ],
-          name: "swap_Eth_pay",
+          name: "swap_Sepolia_Eth_pay",
           outputs: [],
           stateMutability: "payable",
           type: "function",
