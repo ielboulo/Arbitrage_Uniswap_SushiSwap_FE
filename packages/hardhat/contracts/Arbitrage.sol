@@ -131,11 +131,11 @@ contract Arbitrage {
 	}
 
     // Function to get the balance of the smart contract in terms of ETH
-    function getContractBalanceInEth() external view returns (uint256) {
+    function getBalanceInEth() external view returns (uint256) {
         return address(this).balance;
     }
     // Function to get the balance of the smart contract in terms of a specific token
-    function getContractTokenBalance(address tokenAddress) external view returns (uint256) {
+    function getTokenBalanceContract(address tokenAddress) external view returns (uint256) {
         return IERC20(tokenAddress).balanceOf(address(this));
     }
     // Function to get the balance of a wallet for a specific token
