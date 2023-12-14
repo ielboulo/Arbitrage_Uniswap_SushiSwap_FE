@@ -29,7 +29,10 @@ interface IERC20 {
 }
 
 contract Arbitrage {
-    address constant WETH_ADDRESS = 0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6;
+    address constant WETH_ADDRESS    =0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6;
+    address constant ETH_ADDRESS     =0x2170Ed0880ac9A755fd29B2688956BD959F933F8; // Mainnet
+    address constant SEP_ETH_ADDRESS =0x99FCee8A75550a027Fdb674c96F2D7DA31C79fcD; // Sepolia
+
     address constant UNISWAP_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D; //  On Goerli Mainnet 
     address constant SUSHISWAP_ROUTER_ADDRESS = 0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506; // On Goerli Mainnet
 
@@ -86,7 +89,7 @@ function swap_Eth_pay(address _address, uint256 _amountIn) external payable {
 
     // Buy the token on Uniswap with ETH
     address[] memory path = new address[](2);
-    path[0] = address(0); // ETH address
+    path[0] = SEP_ETH_ADDRESS; // ETH address
     path[1] = _address;
 
     uint256[] memory amounts = uniswapRouter.swapExactETHForTokens{value: _amountIn}(0, path, address(this), block.timestamp);
@@ -97,7 +100,7 @@ function swap_Eth_pay(address _address, uint256 _amountIn) external payable {
 
     // Sell the token on Sushiswap for ETH
     path[0] = _address;
-    path[1] = address(0); // ETH address
+    path[1] = SEP_ETH_ADDRESS; // ETH address
 
     uint256[] memory amounts_1 = sushiswapRouter.swapExactTokensForETH(amountOut, 0, path, msg.sender, block.timestamp);
     uint256 amountOut_1 = amounts_1[1];
@@ -117,6 +120,16 @@ function swap_Eth_pay(address _address, uint256 _amountIn) external payable {
         return amounts[1];
     }
 
+    function getPriceFromSushiswap(address _tokenAddress, uint256 _amountIn) external view returns (uint256) {
+        address[] memory path = new address[](2);
+        path[0] = WETH_ADDRESS;
+        path[1] = _tokenAddress;
+        
+        uint256[] memory amounts = uniswapRouter.getAmountsOut(_amountIn, path);
+        
+        // The last element in the 'amounts' array is the desired output amount
+        return amounts[1];
+    }
 
 
 	receive() external payable {}
