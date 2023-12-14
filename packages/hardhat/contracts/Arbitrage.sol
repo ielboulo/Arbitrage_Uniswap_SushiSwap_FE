@@ -30,14 +30,14 @@ interface IERC20 {
 
 contract Arbitrage {
     address constant WETH_ADDRESS = 0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6;
-    // address constant UNISWAP_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D; //  On ETH Mainnet 
-    // address constant SUSHISWAP_ROUTER_ADDRESS = 0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506; // On ETH Mainnet
-
     address constant UNISWAP_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D; //  On Goerli Mainnet 
     address constant SUSHISWAP_ROUTER_ADDRESS = 0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506; // On Goerli Mainnet
 
     IUniswapV2Router private uniswapRouter;
     ISushiSwapRouter private sushiswapRouter;
+
+    string private text;
+
 
     event FetchBalance(uint256 amount);
 
@@ -46,7 +46,14 @@ contract Arbitrage {
         sushiswapRouter = ISushiSwapRouter(SUSHISWAP_ROUTER_ADDRESS);
     }
 
-    function swap(address _address,uint256 _amountIn) external {
+    function getUniswapRouter() external view returns (address) {
+        return UNISWAP_ROUTER_ADDRESS; 
+    }
+    function getSushiswapRouter() external view returns (address) {
+        return SUSHISWAP_ROUTER_ADDRESS; 
+    }
+
+    function swap_WETH(address _address,uint256 _amountIn) external {
         IERC20(WETH_ADDRESS).transferFrom(msg.sender, address(this), _amountIn);
         IERC20(WETH_ADDRESS).approve(address(UNISWAP_ROUTER_ADDRESS) ,_amountIn); 
         // Buy the token on Uniswap with ETH
@@ -66,28 +73,51 @@ contract Arbitrage {
         
     }
 
-    // function getBalance (address _tokenContractAddress) external   returns (uint256) {
-    //     try IERC20(_tokenContractAddress).balanceOf(address(this)) returns (uint256 balance) {
-    //         emit FetchBalance(balance);
-    //         return balance;
-    //     } catch {
-    //         return 0;
-    //     }
-	// }
 
-   // getPrice_uniswap() : dex ? 
-   // getPrice_sushiswap(): oracle ? 
+    function setText(string memory newText) public {
+        text = newText;
+    }
 
-    //     address constant UNISWAP_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;   // On Sepolia ? 
-    //     address constant SUSHISWAP_ROUTER_ADDRESS = 0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506; // On Sepolia ?
 
-    // function : show price of a token 
-    // showprice (address _tokenAddress) returns (price in Eth unit) ==> in both sushi / uni ? 
+function swap_Eth_pay(address _address, uint256 _amountIn) external payable {
+    require(msg.value >= _amountIn, "Insufficient funds sent with the transaction");
 
-    // List of tokens : mapping : Symbol vs Price in Sushi vs Price in UniSwap : print on front-end 
-    // AAVE / Compound / Ape Coin / 
+    // Rest of your existing code...
 
-    // Arbitrage button : existing by default with scaffold ? 
+    // Buy the token on Uniswap with ETH
+    address[] memory path = new address[](2);
+    path[0] = address(0); // ETH address
+    path[1] = _address;
+
+    uint256[] memory amounts = uniswapRouter.swapExactETHForTokens{value: _amountIn}(0, path, address(this), block.timestamp);
+    uint256 amountOut = amounts[1];
+
+    // Log amounts for debugging
+    emit FetchBalance(amountOut);
+
+    // Sell the token on Sushiswap for ETH
+    path[0] = _address;
+    path[1] = address(0); // ETH address
+
+    uint256[] memory amounts_1 = sushiswapRouter.swapExactTokensForETH(amountOut, 0, path, msg.sender, block.timestamp);
+    uint256 amountOut_1 = amounts_1[1];
+
+    require(amountOut_1 > _amountIn, "Arbitrage fail!");
+}
+
+
+    function getPriceFromUniswap(address _tokenAddress, uint256 _amountIn) external view returns (uint256) {
+        address[] memory path = new address[](2);
+        path[0] = WETH_ADDRESS;
+        path[1] = _tokenAddress;
+        
+        uint256[] memory amounts = uniswapRouter.getAmountsOut(_amountIn, path);
+        
+        // The last element in the 'amounts' array is the desired output amount
+        return amounts[1];
+    }
+
+
 
 	receive() external payable {}
 }
